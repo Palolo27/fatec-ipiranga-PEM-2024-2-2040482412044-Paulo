@@ -1,0 +1,58 @@
+/*--------------------------------------------------------*
+
+* Disciplina: Programaçao Estruturada e Modular *
+
+*          Prof. Carlos Veríssimo                                    *
+
+*--------------------------------------------------------*
+
+* Objetivo do Programa: Tabuleiro de Xadrez      *
+
+* Data - 28/08/2024                                               * 
+
+* Autor: Paulo Ricardo F. Brito*
+
+*--------------------------------------------------------*/
+
+#include <stdio.h>
+
+int main() {
+
+    printf("    A   B   C   D   E   F   G   H \n");     //Impressão das colunas de A - H.
+    printf("   _______________________________\n");
+    
+    char* tabuleiro[64] = {     //Declaração do array de 64 ponteiros, contendo uma string para cada  casa do xadrez.     
+
+        "1 ""|""PT1", "PC1", "PB1", " PD", " PR", "PB2", "PC2", "PT2" "|", 
+
+        "2 ""|""PP1", "PP2", "PP3", "PP4","PP5", "PP6", "PP7", "PP8" "|",
+
+        "3 ""|"" X  ", "X  ", "X  ", "X  ", "X  ", "X  ", "X  ", "X " "|",
+
+        "4 ""|"" X  ", "X  ", "X  ", "X  ", "X  ", "X  ", "X  ", "X " "|",
+
+        "5 ""|"" X  ", "X  ", "X  ", "X  ", "X  ", "X  ", "X  ", "X " "|",
+
+        "6 ""|"" X  ", "X  ", "X  ", "X  ", "X  ", "X  ", "X  ", "X " "|",
+
+        "7 ""|""BP1", "BP2", "BP3", "BP4","BP5", "BP6", "BP7", "BP8" "|",
+
+        "8 ""|""BT1", "BC1", "BB1", " BD", " BR", "BB2", "BC2", "BT2" "|",
+        
+    };
+
+    for (int i = 0; i < 8; i++) {   //Loop que itera sobre cada linha do tabuleiro.
+
+        for (int j = 0; j < 8; j++) {   //Loop aninhado que itera cada coluna do tabuleiro.
+
+            printf("%s ", tabuleiro[i * 8 + j]);    //Impressão da casa correspondente no tabuleiro, calcula o índice no array para acessar a posição desejada. 
+            
+        }
+            printf("\n");
+            
+    }
+    
+    printf("  |-------------------------------| \n");
+    return 0;
+
+}

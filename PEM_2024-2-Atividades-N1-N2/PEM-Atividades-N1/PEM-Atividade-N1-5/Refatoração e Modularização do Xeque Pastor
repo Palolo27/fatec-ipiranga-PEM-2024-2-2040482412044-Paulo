@@ -1,0 +1,83 @@
+/*------------------------------------------------------------*
+* Disciplina: Programaçao Estruturada e Modular               *
+*          Prof. Carlos Veríssimo                             *                                                                                          
+*-------------------------------------------------------------*
+* Objetivo do Programa: Refatorar e Modularizar o Xeque Pastor*
+* Data – 12/09/2024                                           * 
+* Autor: Paulo Ricardo F. Brito - 2° ADS Vespertino           *
+*-------------------------------------------------------------*/
+#include <stdio.h>
+
+//Função que imprime o tabuleiro com um laço duplo 'for' para criação das linhas e colunas.
+void imprimirTabuleiro(char tabuleiro [8][8]) { 
+    for (int linha = 0; linha < 8; linha++) {
+        for (int coluna = 0; coluna < 8; coluna++) {
+            printf(" %c  ", tabuleiro[linha][coluna]);
+        }
+        printf("\n");
+    }
+}
+
+//Função que realiza os movimentos das peças no tabuleiro.
+void movimentoTabuleiro(char tabuleiro[8][8], 
+    int linhaDeOrigem, int colunaDeOrigem, int linhaDeDestino, int colunaDeDestino) {
+        tabuleiro[linhaDeDestino][colunaDeDestino] = tabuleiro[linhaDeOrigem][colunaDeOrigem];
+        tabuleiro[linhaDeOrigem][colunaDeOrigem] = '*';
+}
+
+int main () {
+    
+    // Estrutura do tabuleiro criada com um vetor do tipo 'char' 8 * 8.
+    //Letras maiúsculas representam peças brancas e minúsculas peças pretas.
+    char tabuleiro[8][8] = { 
+        {'t', 'c', 'b', 'd', 'r', 'b', 'c', 't'},
+        {'p', 'p', 'p', 'p', 'p', 'p', 'p', 'p'},
+        {'.', '.', '.', '.', '.', '.', '.', '.'},
+        {'.', '.', '.', '.', '.', '.', '.', '.'},
+        {'.', '.', '.', '.', '.', '.', '.', '.'},
+        {'.', '.', '.', '.', '.', '.', '.', '.'},
+        {'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'},
+        {'T', 'C', 'B', 'D', 'R', 'B', 'C', 'T'}
+    };
+    
+    printf("Tabuleiro inicial: \n");
+    imprimirTabuleiro(tabuleiro);
+    
+    //1° Jogada Brancas: 
+    movimentoTabuleiro(tabuleiro, 6, 4, 4, 4);
+    printf("\nJogada 1 (peão branco do rei E2 - E4): \n");
+    imprimirTabuleiro(tabuleiro);
+    
+    //1° Jogada Pretas:
+    movimentoTabuleiro(tabuleiro, 1, 4, 3, 4);
+    printf("\nJogada 1 (peão preto do rei E7 - E5): \n");
+    imprimirTabuleiro(tabuleiro);
+    
+    //2° Jogada Brancas:
+    movimentoTabuleiro(tabuleiro, 7, 5, 4, 2);
+    printf("\nJogada 2 (bispo branco do rei F1 - C4): \n");
+    imprimirTabuleiro(tabuleiro);
+    
+     //2° Jogada Pretas:
+    movimentoTabuleiro(tabuleiro, 0, 1, 2, 2);
+    printf("\nJogada 2 (cavalo preto da dama B8 - C6): \n");
+    imprimirTabuleiro(tabuleiro);
+    
+    //3° Jogada Brancas:
+    movimentoTabuleiro(tabuleiro, 7, 3, 3, 7);
+    printf("\nJogada 3 (dama branca D1 - H5): \n");
+    imprimirTabuleiro(tabuleiro);
+    
+    //3° Jogada Pretas:
+    movimentoTabuleiro(tabuleiro, 0, 6, 2, 5);
+    printf("\nJogada 3  (cavalo perto do rei G8 - F6): \n");
+    imprimirTabuleiro(tabuleiro);
+    
+    //4° Jogada Brancas:
+    movimentoTabuleiro(tabuleiro, 3, 7, 1, 5);
+    printf("\nJogada 4 (dama branca captura peão em F7, Xeque Mate): \n");
+    imprimirTabuleiro(tabuleiro);
+    
+    
+   return 0; 
+}

@@ -1,0 +1,91 @@
+/*--------------------------------------------------------*
+
+* Disciplina: Programaçao Estruturada e Modular *
+
+*          Prof. Carlos Veríssimo                                    *
+
+*--------------------------------------------------------*
+
+* Objetivo do Programa: Implementação do Xeque Pastor     *
+
+* Data - 06/09/2024 * 
+
+* Autor: Paulo Ricardo F. Brito*
+
+*--------------------------------------------------------*/
+
+#include <stdio.h>
+
+void imprime_tabuleiro(char* tabuleiro[64]) {   //
+    printf("    A   B   C   D   E   F   G   H \n");
+    printf("   ________________________________\n");
+    
+    for (int i = 0; i < 8; i++) {
+        printf("%d |", 8 - i);
+        for (int j = 0; j < 8; j++) {
+            printf("%s ", tabuleiro[i * 8 + j]);
+        }
+        printf("| \n\n");
+    }
+    printf("  ---------------------------------- \n");
+}
+
+int main() {
+    char* tabuleiro[64] = {
+        "PT1", "PC1", "PB1", " PD", " PR", "PB2", "PC2", "PT2", 
+        "PP1", "PP2", "PP3", "PP4", "PP5", "PP6", "PP7", "PP8",
+        " X ", " X ", " X ", " X ", " X ", " X ", " X ", " X ",
+        " X ", " X ", " X ", " X ", " X ", " X ", " X ", " X ",
+        " X ", " X ", " X ", " X ", " X ", " X ", " X ", " X ",
+        " X ", " X ", " X ", " X ", " X ", " X ", " X ", " X ",
+        "BP1", "BP2", "BP3", "BP4", "BP5", "BP6", "BP7", "BP8",
+        "BT1", "BC1", "BB1", " BD", " BR", "BB2", "BC2", "BT2",
+    };
+
+    printf("Posição inicial do tabuleiro:\n");
+    imprime_tabuleiro(tabuleiro);
+
+    
+    tabuleiro[52] = "...";  
+    tabuleiro[36] = "BP5";   
+    printf("\nJogada #1: Brancas movem Peão do Rei (e2 -> e4)\n");
+    imprime_tabuleiro(tabuleiro);
+
+    
+    tabuleiro[12] = "..."; 
+    tabuleiro[28] = "PP5";   
+    printf("\nJogada #1: Pretas movem Peão do Rei (e7 -> e5)\n");
+    imprime_tabuleiro(tabuleiro);
+
+    
+    tabuleiro[61] = "...";  
+    tabuleiro[34] = "BB1";   
+    printf("\nJogada #2: Brancas movem Bispo (f1 -> c4)\n");
+    imprime_tabuleiro(tabuleiro);
+
+    
+    tabuleiro[1] = "...";   
+    tabuleiro[18] = "PC1";   
+    printf("\nJogada #2: Pretas movem Cavalo da Dama (b8 -> c6)\n");
+    imprime_tabuleiro(tabuleiro);
+
+    
+    tabuleiro[59] = "...";  
+    tabuleiro[31] = "BD ";    
+    printf("\nJogada #3: Brancas movem Dama (d1 -> h5)\n");
+    imprime_tabuleiro(tabuleiro);
+
+   
+    tabuleiro[6] = "...";  
+    tabuleiro[21] = "PC2";  
+    printf("\nJogada #3: Pretas movem Cavalo do Rei (g8 -> f6)\n");
+    imprime_tabuleiro(tabuleiro);
+
+    
+    tabuleiro[31] = "...";  
+    tabuleiro[13] = "BD ";    
+    printf("\nJogada #4: Brancas capturam Peão do Rei e dão Xeque Mate \n");
+    imprime_tabuleiro(tabuleiro);
+
+    return 0;
+}

@@ -16,7 +16,7 @@
 
 #include <stdio.h>
 
-void imprime_tabuleiro(char* tabuleiro[64]) {   //
+void imprimeTabuleiro(char* tabuleiro[64]) {   //Declaração da função que imprime o tabuleiro no terminal, utiliza um laço duplo 'for' para percorrer todo o tabuleiro.
     printf("    A   B   C   D   E   F   G   H \n");
     printf("   ________________________________\n");
     
@@ -31,7 +31,7 @@ void imprime_tabuleiro(char* tabuleiro[64]) {   //
 }
 
 int main() {
-    char* tabuleiro[64] = {
+    char* tabuleiro[64] = {     //Vetor com 64 strings representando o tabuleiro.
         "PT1", "PC1", "PB1", " PD", " PR", "PB2", "PC2", "PT2", 
         "PP1", "PP2", "PP3", "PP4", "PP5", "PP6", "PP7", "PP8",
         " X ", " X ", " X ", " X ", " X ", " X ", " X ", " X ",
@@ -43,49 +43,49 @@ int main() {
     };
 
     printf("Posição inicial do tabuleiro:\n");
-    imprime_tabuleiro(tabuleiro);
+    imprimeTabuleiro(tabuleiro);   //Impressão do tabuleiro chamando a função "imprimeTabuleiro".
 
     
-    tabuleiro[52] = "...";  
+    tabuleiro[52] = "...";  //Sistema par movimentação das peças em campos especifícos.
     tabuleiro[36] = "BP5";   
     printf("\nJogada #1: Brancas movem Peão do Rei (e2 -> e4)\n");
-    imprime_tabuleiro(tabuleiro);
+    imprimeTabuleiro(tabuleiro);
 
     
     tabuleiro[12] = "..."; 
     tabuleiro[28] = "PP5";   
     printf("\nJogada #1: Pretas movem Peão do Rei (e7 -> e5)\n");
-    imprime_tabuleiro(tabuleiro);
+    imprimeTabuleiro(tabuleiro);
 
     
     tabuleiro[61] = "...";  
     tabuleiro[34] = "BB1";   
     printf("\nJogada #2: Brancas movem Bispo (f1 -> c4)\n");
-    imprime_tabuleiro(tabuleiro);
+    imprimeTabuleiro(tabuleiro);
 
     
     tabuleiro[1] = "...";   
     tabuleiro[18] = "PC1";   
     printf("\nJogada #2: Pretas movem Cavalo da Dama (b8 -> c6)\n");
-    imprime_tabuleiro(tabuleiro);
+    imprimeTabuleiro(tabuleiro);
 
     
     tabuleiro[59] = "...";  
     tabuleiro[31] = "BD ";    
     printf("\nJogada #3: Brancas movem Dama (d1 -> h5)\n");
-    imprime_tabuleiro(tabuleiro);
+    imprimeTabuleiro(tabuleiro);
 
    
     tabuleiro[6] = "...";  
     tabuleiro[21] = "PC2";  
     printf("\nJogada #3: Pretas movem Cavalo do Rei (g8 -> f6)\n");
-    imprime_tabuleiro(tabuleiro);
+    imprimeTabuleiro(tabuleiro);
 
     
     tabuleiro[31] = "...";  
     tabuleiro[13] = "BD ";    
     printf("\nJogada #4: Brancas capturam Peão do Rei e dão Xeque Mate \n");
-    imprime_tabuleiro(tabuleiro);
+    imprimeTabuleiro(tabuleiro);
 
     return 0;
 }

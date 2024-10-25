@@ -1,0 +1,151 @@
+/*--------------------------------------------------------*
+
+* Disciplina: Programaçao Estruturada e Modular *
+
+*          Prof. Carlos Veríssimo *
+
+*--------------------------------------------------------*
+
+* Objetivo do Programa: Manipulando Struct *
+
+* Data - 24/10/2024 * 
+
+* Autor: Paulo Ricardo Ferreira Brito *
+*--------------------------------------------------------*/
+
+#include <stdio.h>
+#include <string.h> // Para usar strcspn
+
+// Estrutura da loja
+struct pemTec {
+    int id;
+    char produto[50];
+    char descricao[50];
+    float preco;
+    int estoque;
+};
+
+typedef struct pemTec pemTec;
+
+// Função de inserção dos produtos
+void inserirProdutos(pemTec lista[], int numDeProdutos) {
+    printf("--------------------");
+    printf("\nCadastro de produtos\n");
+    printf("--------------------");
+
+    for(int i = 0; i < numDeProdutos; i++) {
+        printf("\nInsira o ID(numérico) %d:\n", i + 1);
+        printf("ID: ");
+        scanf("%d", &lista[i].id);
+        getchar(); // Limpa o buffer do stdin após ler um inteiro
+
+        printf("Insira o nome do produto: "); // Manter a linha
+        fgets(lista[i].produto, sizeof(lista[i].produto), stdin);  // Lê o nome do produto
+        lista[i].produto[strcspn(lista[i].produto, "\n")] = '\0';  // Remove o caractere de nova linha
+
+        printf("Insira a descrição: "); // Manter a linha
+        fgets(lista[i].descricao, sizeof(lista[i].descricao), stdin);  // Lê a descrição do produto
+        lista[i].descricao[strcspn(lista[i].descricao, "\n")] = '\0';  // Remove o caractere de nova linha
+
+        printf("Insira o preço: ");
+        scanf("%f", &lista[i].preco);
+
+        printf("Insira a quantidade em estoque: ");
+        scanf("%d", &lista[i].estoque);
+        getchar(); // Limpa o buffer do stdin após ler um inteiro
+    }
+}
+
+// Função de exibição dos produtos na lista
+void exibirProdutos(pemTec lista[], int produto) {
+    printf("\n-----------------");
+    printf("\nLista de produtos\n");
+    printf("-----------------");
+
+    for(int i = 0; i < produto; i++) {
+        printf("\nProduto %d\n", i + 1);
+        printf("ID: %d\n", lista[i].id);
+        printf("Nome: %s\n", lista[i].produto);
+        printf("Descrição: %s\n", lista[i].descricao);
+        printf("Preço: R$ %.2f\n", lista[i].preco);
+        printf("Estoque: %d\n", lista[i].estoque);
+    }
+}
+
+// Função de ordenação por Bubble Sort
+void bubbleSort(pemTec lista[], int numDeProdutos) {
+    pemTec temp;
+
+    for(int i = 0; i < numDeProdutos - 1; i++) {
+        for(int j = 0; j < numDeProdutos - i - 1; j++) {
+            if(strcmp(lista[j].produto, lista[j + 1].produto) > 0) {
+                temp = lista[j];
+                lista[j] = lista[j + 1];
+                lista[j + 1] = temp;
+            }
+        }
+    }
+}
+
+// Função para simular compra online
+void simuladorCompra(pemTec lista[], int numDeProdutos) {
+    printf("\n--------------------------");
+    printf("\nSimulador de Compra Online\n");
+    printf("--------------------------");
+    
+    int codigoProduto, quantidade;
+    
+    printf("\nInsira o ID do produto: ");
+    scanf("%d", &codigoProduto);
+    
+    // Procura do produto na lista
+    pemTec *buscaProduto = NULL;
+    
+    for(int i = 0; i < numDeProdutos; i++) {
+        if(lista[i].id == codigoProduto) {
+            buscaProduto = &lista[i];
+            break;
+        }
+    }
+   if (buscaProduto == NULL) {
+            printf("Produto Inexistente.\n");
+            return; 
+        }
+
+        printf("Quantidade de produtos desejada: ");
+        scanf("%d", &quantidade);
+
+        // Verificação do estoque
+        if(quantidade > buscaProduto->estoque) {
+            printf("Estoque insuficiente para %s. Disponível: %d unidades\n", buscaProduto->produto, buscaProduto->estoque);
+            printf("Tente novamente com uma quantidade válida.\n");
+        } else {
+            buscaProduto->estoque -= quantidade;
+            printf("Compra finalizada. Compradas %dx unidades de %s.\n", quantidade, buscaProduto->produto);
+
+        }
+    }
+
+
+int main() {
+    int quantInserida;
+
+    printf("Quantos produtos deseja inserir? \n");
+    scanf("%d", &quantInserida);
+    getchar(); // Limpa o buffer
+
+    pemTec listaProdutos[quantInserida]; // Declaração do array de produtos
+
+    inserirProdutos(listaProdutos, quantInserida);
+    
+    bubbleSort(listaProdutos, quantInserida);
+    
+    exibirProdutos(listaProdutos, quantInserida);
+    
+    simuladorCompra(listaProdutos, quantInserida);
+    
+    printf("\nLista atualizada: \n");
+    exibirProdutos(listaProdutos, quantInserida);
+    
+    return 0;
+}

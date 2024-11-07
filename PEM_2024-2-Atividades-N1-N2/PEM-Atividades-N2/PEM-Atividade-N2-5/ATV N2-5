@@ -1,0 +1,186 @@
+/*--------------------------------------------------------*
+
+* Disciplina: Programaçao Estruturada e Modular *
+
+*          Prof. Carlos Veríssimo *
+
+*--------------------------------------------------------*
+
+* Objetivo do Programa: Utilizando Ponteiros *
+
+* Data - 05/11/2024 * 
+
+* Autor: Paulo Ricardo Ferreira Brito *
+*--------------------------------------------------------*/
+
+#include <stdio.h>
+#include <string.h>
+
+typedef struct {
+    int id;
+    char produto[50];
+    int quantEstoque;
+    double valor;
+} Loja;
+
+// Função para incluir produto
+void incluirProd(Loja *lista, int *numProds) {
+    printf("Insira o ID(numérico) do produto %d:\n", *numProds + 1);
+    printf("ID: ");
+    scanf("%d", &lista[*numProds].id);
+    getchar();
+    
+    printf("Insira o nome do produto: \n");
+    fgets(lista[*numProds].produto, sizeof(lista[*numProds].produto), stdin);
+    lista[*numProds].produto[strcspn(lista[*numProds].produto, "\n")] = '\0';
+    
+    printf("Insira a quantidade em estoque: \n");
+    scanf("%d", &lista[*numProds].quantEstoque);
+    getchar();
+    
+    printf("Insira o valor: \n");
+    scanf("%lf", &lista[*numProds].valor);
+    getchar();
+    
+    (*numProds)++;
+}
+
+// Função para consultar produto por ID
+void consultaProd(Loja *lista, int numProds, int id) {
+    for(int i = 0; i < numProds; i++) {
+        if (lista[i].id == id) {
+            printf("\nProduto %d\n", i + 1);
+            printf("ID: %d\n", lista[i].id);
+            printf("Nome: %s\n", lista[i].produto);
+            printf("Preço: R$%.2f\n", lista[i].valor);
+            printf("Estoque: %d\n", lista[i].quantEstoque);
+            return;
+        }
+    }
+    printf("Produto com ID %d não encontrado.\n", id);
+}
+
+// Função para alterar produto por ID
+void altProd(Loja *lista, int numProds, int id) {
+    for(int i = 0; i < numProds; i++) {
+        if (lista[i].id == id) {
+            printf("Alterando o produto com ID %d\n", id);
+            printf("Novo nome do produto: ");
+            getchar();
+            fgets(lista[i].produto, sizeof(lista[i].produto), stdin);
+            lista[i].produto[strcspn(lista[i].produto, "\n")] = '\0';
+            
+            printf("Nova quantidade em estoque: ");
+            scanf("%d", &lista[i].quantEstoque);
+            getchar();
+            
+            printf("Novo valor: ");
+            scanf("%lf", &lista[i].valor);
+            getchar();
+            
+            printf("Produto alterado com sucesso.\n");
+            return;
+        }
+    }
+    printf("Produto com ID %d não encontrado.\n", id);
+}
+
+// Função para excluir produto por ID
+void excluirProd(Loja *lista, int *numProds, int id) {
+    for(int i = 0; i < *numProds; i++) {
+        if (lista[i].id == id) {
+            for (int j = i; j < *numProds - 1; j++) {
+                lista[j] = lista[j + 1];
+            }
+            (*numProds)--;
+            printf("Produto com ID %d excluído com sucesso.\n", id);
+            return;
+        }
+    }
+    printf("Produto com ID %d não encontrado.\n", id);
+}
+
+// Função para vender produto
+void vendaProd(Loja *lista, int numProds, int id, int quantidade) {
+    for(int i = 0; i < numProds; i++) {
+        if (lista[i].id == id) {
+            if (lista[i].quantEstoque >= quantidade) {
+                lista[i].quantEstoque -= quantidade;
+                printf("Venda de %d unidade(s) do produto %s realizada com sucesso.\n", quantidade, lista[i].produto);
+                return;
+            } else {
+                printf("Quantidade em estoque insuficiente para a venda.\n");
+                return;
+            }
+        }
+    }
+    printf("Produto com ID %d não encontrado.\n", id);
+}
+
+// Função para imprimir dados de todos os produtos
+void impressao(Loja *lista, int numProds) {
+    for(int i = 0; i < numProds; i++) {
+        printf("\nProduto %d\n", i + 1);
+        printf("ID: %d\n", lista[i].id);
+        printf("Nome: %s\n", lista[i].produto);
+        printf("Preço: R$%.2f\n", lista[i].valor);
+        printf("Estoque: %d\n", lista[i].quantEstoque);
+    }
+}
+
+int main() {
+    Loja lista[100];
+    int numProds = 0;
+    int opcao, id, quantidade;
+
+    do {
+        printf("\nEscolha uma opção:\n");
+        printf("1. Incluir produto\n");
+        printf("2. Consultar produto\n");
+        printf("3. Alterar produto\n");
+        printf("4. Excluir produto\n");
+        printf("5. Vender produto\n");
+        printf("6. Imprimir todos os produtos\n");
+        printf("0. Sair\n");
+        scanf("%d", &opcao);
+        getchar();
+
+        switch(opcao) {
+            case 1:
+                incluirProd(lista, &numProds);
+                break;
+            case 2:
+                printf("Insira o ID do produto para consulta: ");
+                scanf("%d", &id);
+                consultaProd(lista, numProds, id);
+                break;
+            case 3:
+                printf("Insira o ID do produto para alterar: ");
+                scanf("%d", &id);
+                altProd(lista, numProds, id);
+                break;
+            case 4:
+                printf("Insira o ID do produto para excluir: ");
+                scanf("%d", &id);
+                excluirProd(lista, &numProds, id);
+                break;
+            case 5:
+                printf("Insira o ID do produto para venda: ");
+                scanf("%d", &id);
+                printf("Insira a quantidade para vender: ");
+                scanf("%d", &quantidade);
+                vendaProd(lista, numProds, id, quantidade);
+                break;
+            case 6:
+                impressao(lista, numProds);
+                break;
+            case 0:
+                printf("Saindo do programa.\n");
+                break;
+            default:
+                printf("Opção inválida.\n");
+        }
+    } while(opcao != 0);
+
+    return 0;
+}

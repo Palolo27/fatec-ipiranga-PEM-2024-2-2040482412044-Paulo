@@ -1,0 +1,317 @@
+/*--------------------------------------------------------*
+
+* Disciplina: Programaçao Estruturada e Modular *
+
+*          Prof. Carlos Veríssimo *
+
+*--------------------------------------------------------*
+
+* Objetivo do Programa: Análise crítica de codigo *
+
+* Data - 29/11/2024 * 
+
+* Autor: Paulo Ricardo Ferreira Brito *
+*--------------------------------------------------------*/
+
+/*
+Alterações Implementadas:
+  Divisão de funções maiores em funções menores.
+  Inclusão de funções para salvar e carregar produtos.
+    
+Validações:
+  Checagem de nomes duplicados.
+  Validação de preços e quantidades.
+  Substituição de goto por estruturas de repetição (do-while em menus).
+  Controle de buffer de entrada para evitar problemas com fgets e scanf.
+*/
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#define CARACTERES 100
+#define MAXPRODUTOS 500
+#define INICIO 0
+#define MSG_PRODUTO_INEXISTENTE "Produto inexistente!\n"
+#define MSG_NOME_DUPLICADO "Nome duplicado! Escolha outro nome.\n"
+
+struct produto {
+    int codigo;
+    char nome[CARACTERES];
+    int quantidade;
+    float preco;
+};
+
+// Declaração de funções principais
+int menuOpcoes();
+void incluirProduto(struct produto *produtos, int *totalProdutos, int *excluidos);
+void alterarProduto(struct produto *produtos, int totalProdutos);
+void excluirProduto(struct produto *produtos, int *totalProdutos, int *excluidos);
+void comprarProduto(struct produto *produtos, int totalProdutos);
+void consultarProduto(struct produto *produtos, int totalProdutos);
+void listarProdutos(struct produto *produtos, int totalProdutos);
+
+// Funções auxiliares
+int validarCodigo(struct produto *produtos, int totalProdutos, int codigo);
+int confirmarResposta();
+void limparBuffer();
+int validarNomeDuplicado(struct produto *produtos, int totalProdutos, const char *nome);
+
+// Integridade de dados
+void salvarProdutos(struct produto *produtos, int totalProdutos, const char *arquivo);
+void carregarProdutos(struct produto *produtos, int *totalProdutos, const char *arquivo);
+
+int main() {
+    int totalProdutos = 0, excluidos = 0;
+    struct produto produtos[MAXPRODUTOS];
+    const char *arquivoDados = "produtos.dat";
+
+    // Carregar dados salvos
+    carregarProdutos(produtos, &totalProdutos, arquivoDados);
+
+    while (1) {
+        switch (menuOpcoes()) {
+            case 0:
+                printf("Obrigado por utilizar nosso programa!\n");
+                salvarProdutos(produtos, totalProdutos, arquivoDados);
+                return 0;
+            case 1:
+                incluirProduto(produtos, &totalProdutos, &excluidos);
+                break;
+            case 2:
+                alterarProduto(produtos, totalProdutos);
+                break;
+            case 3:
+                excluirProduto(produtos, &totalProdutos, &excluidos);
+                break;
+            case 4:
+                comprarProduto(produtos, totalProdutos);
+                break;
+            case 5:
+                consultarProduto(produtos, totalProdutos);
+                break;
+            case 6:
+                listarProdutos(produtos, totalProdutos);
+                break;
+            default:
+                printf("Opção inválida. Tente novamente.\n");
+        }
+    }
+}
+
+// Menu de opções
+int menuOpcoes() {
+    int resposta;
+
+    printf("\nO que deseja fazer?\n");
+    printf("0 - Sair\n");
+    printf("1 - Incluir produto\n");
+    printf("2 - Alterar produto\n");
+    printf("3 - Excluir produto\n");
+    printf("4 - Comprar produto\n");
+    printf("5 - Consultar produto\n");
+    printf("6 - Listar produtos\n");
+    printf("Escolha uma opção: ");
+    scanf("%d", &resposta);
+    limparBuffer();
+
+    return resposta;
+}
+
+// Função para incluir um produto
+void incluirProduto(struct produto *produtos, int *totalProdutos, int *excluidos) {
+    if (*totalProdutos == MAXPRODUTOS) {
+        printf("Capacidade máxima de produtos alcançada!\n");
+        return;
+    }
+
+    struct produto novoProduto;
+    novoProduto.codigo = *totalProdutos + *excluidos + 1;
+
+    printf("Digite o nome do produto: ");
+    fgets(novoProduto.nome, CARACTERES, stdin);
+    novoProduto.nome[strcspn(novoProduto.nome, "\n")] = '\0';
+
+    // Validar nomes duplicados
+    if (validarNomeDuplicado(produtos, *totalProdutos, novoProduto.nome)) {
+        printf(MSG_NOME_DUPLICADO);
+        return;
+    }
+
+    printf("Digite o preço do produto: ");
+    scanf("%f", &novoProduto.preco);
+    if (novoProduto.preco <= 0) {
+        printf("Preço inválido! Deve ser maior que 0.\n");
+        return;
+    }
+
+    printf("Digite a quantidade em estoque: ");
+    scanf("%d", &novoProduto.quantidade);
+    if (novoProduto.quantidade < 0) {
+        printf("Quantidade inválida! Não pode ser negativa.\n");
+        return;
+    }
+
+    limparBuffer();
+    produtos[*totalProdutos] = novoProduto;
+    (*totalProdutos)++;
+
+    printf("Produto incluído com sucesso!\n");
+}
+
+// Função para validar códigos de produto
+int validarCodigo(struct produto *produtos, int totalProdutos, int codigo) {
+    for (int i = 0; i < totalProdutos; i++) {
+        if (produtos[i].codigo == codigo) {
+            return i;
+        }
+    }
+    printf(MSG_PRODUTO_INEXISTENTE);
+    return -1;
+}
+
+// Função para excluir um produto
+void excluirProduto(struct produto *produtos, int *totalProdutos, int *excluidos) {
+    int codigo, indice;
+
+    printf("Digite o código do produto que deseja excluir: ");
+    scanf("%d", &codigo);
+
+    indice = validarCodigo(produtos, *totalProdutos, codigo);
+    if (indice < 0) return;
+
+    // Marca o produto como excluído
+    produtos[indice].quantidade = -1; // Definir quantidade negativa para indicar exclusão
+    (*excluidos)++;
+
+    printf("Produto excluído com sucesso!\n");
+}
+
+// Função para comprar um produto
+void comprarProduto(struct produto *produtos, int totalProdutos) {
+    int codigo, quantidade, indice;
+
+    printf("Digite o código do produto que deseja comprar: ");
+    scanf("%d", &codigo);
+
+    indice = validarCodigo(produtos, totalProdutos, codigo);
+    if (indice < 0) return;
+
+    printf("Digite a quantidade que deseja comprar: ");
+    scanf("%d", &quantidade);
+
+    if (quantidade > produtos[indice].quantidade) {
+        printf("Quantidade insuficiente em estoque!\n");
+    } else {
+        produtos[indice].quantidade -= quantidade;
+        printf("Compra realizada com sucesso!\n");
+    }
+}
+
+// Função para consultar um produto
+void consultarProduto(struct produto *produtos, int totalProdutos) {
+    int codigo, indice;
+
+    printf("Digite o código do produto que deseja consultar: ");
+    scanf("%d", &codigo);
+
+    indice = validarCodigo(produtos, totalProdutos, codigo);
+    if (indice < 0) return;
+
+    printf("Produto encontrado: %s\n", produtos[indice].nome);
+    printf("Preço: R$%.2f\n", produtos[indice].preco);
+    printf("Quantidade em estoque: %d\n", produtos[indice].quantidade);
+}
+
+// Função para listar todos os produtos
+void listarProdutos(struct produto *produtos, int totalProdutos) {
+    printf("\nLista de produtos:\n");
+
+    for (int i = 0; i < totalProdutos; i++) {
+        if (produtos[i].quantidade >= 0) { // Não exibe produtos excluídos
+            printf("Código: %d | Nome: %s | Preço: R$%.2f | Quantidade: %d\n",
+                   produtos[i].codigo, produtos[i].nome, produtos[i].preco, produtos[i].quantidade);
+        }
+    }
+}
+
+
+// Função para alterar um produto
+void alterarProduto(struct produto *produtos, int totalProdutos) {
+    int codigo, indice;
+
+    printf("Digite o código do produto que deseja alterar: ");
+    scanf("%d", &codigo);
+
+    indice = validarCodigo(produtos, totalProdutos, codigo);
+    if (indice < 0) return;
+
+    int opcao;
+    do {
+        printf("\nO que deseja alterar?\n");
+        printf("1 - Nome\n");
+        printf("2 - Preço\n");
+        printf("3 - Quantidade\n");
+        printf("0 - Sair\n");
+        printf("Escolha uma opção: ");
+        scanf("%d", &opcao);
+        limparBuffer();
+
+        switch (opcao) {
+            case 1:
+                printf("Digite o novo nome: ");
+                fgets(produtos[indice].nome, CARACTERES, stdin);
+                produtos[indice].nome[strcspn(produtos[indice].nome, "\n")] = '\0';
+                printf("Nome alterado com sucesso!\n");
+                break;
+            case 2:
+                printf("Digite o novo preço: ");
+                scanf("%f", &produtos[indice].preco);
+                printf("Preço alterado com sucesso!\n");
+                break;
+            case 3:
+                printf("Digite a nova quantidade: ");
+                scanf("%d", &produtos[indice].quantidade);
+                printf("Quantidade alterada com sucesso!\n");
+                break;
+            case 0:
+                break;
+            default:
+                printf("Opção inválida! Tente novamente.\n");
+        }
+    } while (opcao != 0);
+}
+
+// Função para limpar o buffer de entrada
+void limparBuffer() {
+    while (getchar() != '\n');
+}
+
+// Validação de nome duplicado
+int validarNomeDuplicado(struct produto *produtos, int totalProdutos, const char *nome) {
+    for (int i = 0; i < totalProdutos; i++) {
+        if (strcmp(produtos[i].nome, nome) == 0) {
+            return 1; // Nome duplicado
+        }
+    }
+    return 0; // Nome único
+}
+
+// Funções para salvar e carregar dados
+void salvarProdutos(struct produto *produtos, int totalProdutos, const char *arquivo) {
+    FILE *file = fopen(arquivo, "wb");
+    if (file) {
+        fwrite(&totalProdutos, sizeof(int), 1, file);
+        fwrite(produtos, sizeof(struct produto), totalProdutos, file);
+        fclose(file);
+    }
+}
+
+void carregarProdutos(struct produto *produtos, int *totalProdutos, const char *arquivo) {
+    FILE *file = fopen(arquivo, "rb");
+    if (file) {
+        fread(totalProdutos, sizeof(int), 1, file);
+        fread(produtos, sizeof(struct produto), *totalProdutos, file);
+        fclose(file);
+    }
+}
